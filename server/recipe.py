@@ -34,3 +34,19 @@ class Recipe(Resource):
                         return jsonify({'error': 'Invalid request'}), 422
                 return jsonify({'error': 'Recipe not found'}), 404
         return jsonify({'error': 'Unauthorized'}), 401
+
+    def delete(self, id):
+        if 'user_id' in session:
+            user_id = session['user_id']
+            user = User.query.get(user_id)
+            if user:
+                recipe = Recipe.query.get(id)
+                if recipe:
+                    try:
+                        db.session.delete(recipe)
+                        db.session.commit()
+                        return jsonify({}), 204
+                    except:
+                        return jsonify({'error': 'Invalid request'}), 422
+                return jsonify({'error': 'Recipe not found'}), 404
+        return jsonify({'error': 'Unauthorized'}), 401
